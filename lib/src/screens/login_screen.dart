@@ -23,32 +23,42 @@ class LoginScreen extends StatelessWidget {
   }
 
   Widget buildEmailField() {
-    return TextField(
-      keyboardType: TextInputType.emailAddress,
-      onChanged: (String? val){
-        authBloc.changeEmail(val!);
-      },
-      decoration: InputDecoration(
-        labelText: "Your email",
-        hintText: "you@gmail.com",
-        errorText: authBloc.emailStream.toString(),
-        border: OutlineInputBorder(),
-      ),
+    return StreamBuilder<Object>(
+      stream: authBloc.emailStream, // stream listen
+      builder: (BuildContext context, AsyncSnapshot snapshot) {
+        return TextField(
+          keyboardType: TextInputType.emailAddress,
+          onChanged: (String? val){
+            authBloc.changeEmail(val!);
+          },
+          decoration: InputDecoration(
+            labelText: "Your email",
+            hintText: "you@gmail.com",
+            errorText: snapshot.hasError ?  snapshot.error.toString() : null,
+            border: OutlineInputBorder(),
+          ),
+        );
+      }
     );
   }
 
   Widget buildPasswordField() {
-    return TextField(
-      obscureText: true,
-      onChanged: (String? val){
-        authBloc.changePassword(val!);
-      },
-      decoration: InputDecoration(
-        labelText: "Your password",
-        hintText: "********",
-        errorText: authBloc.passwordStream.toString(),
-        border: OutlineInputBorder(),
-      ),
+    return StreamBuilder<Object>(
+      stream: authBloc.passwordStream,
+      builder: (context, snapshot) {
+        return TextField(
+          obscureText: true,
+          onChanged: (String? val){
+            authBloc.changePassword(val!);
+          },
+          decoration: InputDecoration(
+            labelText: "Your password",
+            hintText: "********",
+            errorText: snapshot.hasError ?  snapshot.error.toString() : null,
+            border: OutlineInputBorder(),
+          ),
+        );
+      }
     );
   }
 
@@ -57,7 +67,7 @@ class LoginScreen extends StatelessWidget {
       width: double.infinity,
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
-          padding: EdgeInsets.all(16),
+          padding: EdgeInsets.all(18),
           primary: Colors.green,
         ),
           onPressed: (){},
@@ -67,29 +77,28 @@ class LoginScreen extends StatelessWidget {
   }
 
   Widget buildGenderField() {
-    return Container(
-      width: double.infinity,
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.grey),
-        borderRadius: BorderRadius.circular(4),
-      ),
-      padding: EdgeInsets.symmetric(horizontal: 10),
-      child: DropdownButton(
-        items: [
-          DropdownMenuItem(child: Text("Male"), value: "Male"),
-          DropdownMenuItem(child: Text("Female"), value: "Female"),
-          DropdownMenuItem(child: Text("Others"), value: "Others"),
-          DropdownMenuItem(child: Text("Rather Not Say"), value: "Rather Not Say"),
-        ],
-        onChanged: (val){},
-        style: TextStyle(color: Colors.white),
-        value: "Male",
-        underline: Container(),
-        isExpanded: true,
-        hint: Text("Select your gender"),
-      ),
+    return StreamBuilder<Object>(
+      stream: authBloc.genderStream,
+      builder: (context, AsyncSnapshot snapshot) {
+        return DropdownButtonFormField<String>(
+            items: [
+              DropdownMenuItem(child: Text("Male"), value: "Male"),
+              DropdownMenuItem(child: Text("Female"), value: "Female"),
+              DropdownMenuItem(child: Text("Others"), value: "Others"),
+              DropdownMenuItem(child: Text("Rather Not Say"), value: "Rather Not Say"),
+            ],
+            onChanged: (String? val){
+              authBloc.changeGender(val!);
+            },
+
+          value: snapshot.data,
+          decoration: InputDecoration(
+            hintText: "Select your gender",
+            border: OutlineInputBorder(),
+            errorText: snapshot.hasError ?  snapshot.error.toString() : null,
+          ),
+        );
+      }
     );
   }
-
-  // Widget buildGenderField() {}
 }
