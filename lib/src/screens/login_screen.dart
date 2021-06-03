@@ -28,9 +28,7 @@ class LoginScreen extends StatelessWidget {
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         return TextField(
           keyboardType: TextInputType.emailAddress,
-          onChanged: (String? val){
-            authBloc.changeEmail(val!);
-          },
+          onChanged: authBloc.changeEmail,
           decoration: InputDecoration(
             labelText: "Your email",
             hintText: "you@gmail.com",
@@ -48,9 +46,7 @@ class LoginScreen extends StatelessWidget {
       builder: (context, snapshot) {
         return TextField(
           obscureText: true,
-          onChanged: (String? val){
-            authBloc.changePassword(val!);
-          },
+          onChanged: authBloc.changePassword,
           decoration: InputDecoration(
             labelText: "Your password",
             hintText: "********",

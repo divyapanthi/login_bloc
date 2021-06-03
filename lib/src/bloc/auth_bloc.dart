@@ -3,9 +3,9 @@ import 'dart:async';
 import 'package:login_bloc_arch/src/validators/auth_validator.dart';
 
 class AuthBloc with AuthValidator {
-  final _emailController = StreamController<String>();
-  final _passwordController = StreamController<String>();
-  final _genderController = StreamController<String>();
+  final _emailController = StreamController<String>.broadcast();
+  final _passwordController = StreamController<String>.broadcast();
+  final _genderController = StreamController<String>.broadcast();
 
   //getters for Functions
   Function(String) get changeEmail =>  _emailController.sink.add;
@@ -24,3 +24,4 @@ class AuthBloc with AuthValidator {
     _genderController.close();
   }
 }
+final authBloc = AuthBloc();
