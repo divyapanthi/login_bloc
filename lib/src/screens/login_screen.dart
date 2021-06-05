@@ -1,28 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:login_bloc_arch/src/bloc/auth_bloc.dart';
+import 'package:login_bloc_arch/src/bloc/auth_bloc_provider.dart';
 
 class LoginScreen extends StatelessWidget {
-  final authBloc = AuthBloc();
+  
   @override
   Widget build(BuildContext context) {
+    final AuthBloc authBloc = AuthBlocProvider.of(context);
     return Container(
       padding: EdgeInsets.all(16),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          buildEmailField(),
+          buildEmailField(authBloc),
           SizedBox(height: 16),
-          buildPasswordField(),
+          buildPasswordField(authBloc),
           SizedBox(height: 16),
-          buildGenderField(),
+          buildGenderField(authBloc),
           SizedBox(height: 16),
-          buildSubmitButton(),
+          buildSubmitButton(authBloc),
         ],
       ),
     );
   }
 
-  Widget buildEmailField() {
+  Widget buildEmailField(AuthBloc authBloc) {
     return StreamBuilder<Object>(
       stream: authBloc.emailStream, // stream listen
       builder: (BuildContext context, AsyncSnapshot snapshot) {
@@ -40,7 +42,8 @@ class LoginScreen extends StatelessWidget {
     );
   }
 
-  Widget buildPasswordField() {
+  Widget buildPasswordField(AuthBloc authBloc) {
+    // final AuthBloc authBloc = AuthBlocProvider.of(context);
     return StreamBuilder<Object>(
       stream: authBloc.passwordStream,
       builder: (context, snapshot) {
@@ -58,21 +61,28 @@ class LoginScreen extends StatelessWidget {
     );
   }
 
-  Widget buildSubmitButton() {
-    return Container(
-      width: double.infinity,
-      child: ElevatedButton(
-        style: ElevatedButton.styleFrom(
-          padding: EdgeInsets.all(18),
-          primary: Colors.green,
-        ),
-          onPressed: (){},
-          child: Text("Submit"),
-      ),
+  Widget buildSubmitButton(AuthBloc authBloc) {
+    return StreamBuilder<Object>(
+      stream: authBloc.buttonStream  ,
+      builder: (context, snapshot) {
+        return Container(
+          width: double.infinity,
+          child: ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              padding: EdgeInsets.all(18),
+              primary: Colors.green,
+            ),
+              onPressed: snapshot.hasData ?  () {
+              print("");
+              } : null,
+              child: Text("Submit"),
+          ),
+        );
+      }
     );
   }
 
-  Widget buildGenderField() {
+  Widget buildGenderField(AuthBloc authBloc) {
     return StreamBuilder<Object>(
       stream: authBloc.genderStream,
       builder: (context, AsyncSnapshot snapshot) {

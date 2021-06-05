@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:login_bloc_arch/src/validators/auth_validator.dart';
+import 'package:rxdart/rxdart.dart';
+
 
 class AuthBloc with AuthValidator {
   final _emailController = StreamController<String>.broadcast();
@@ -18,10 +20,16 @@ class AuthBloc with AuthValidator {
   Stream<String> get genderStream => _genderController.stream.transform(genderValidator);
 
 
+  //todo combine 3 streams
+  Stream<bool> get buttonStream => Rx.combineLatest3(emailStream, passwordStream, genderStream,
+  (a, b, c) => true); // this function is called only if valid values in all streams.
+
+
+
   void dispose() {
     _emailController.close();
     _passwordController.close();
     _genderController.close();
   }
 }
-final authBloc = AuthBloc();
+
