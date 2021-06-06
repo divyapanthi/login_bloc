@@ -28,6 +28,8 @@ class AuthBloc with AuthValidator {
   Stream<bool> get loadingStatusStream => _loadingController.stream;
 
 
+  String get currentEmail => _emailController.value;
+
   //todo combine 3 streams
   Stream<bool> get buttonStream => Rx.combineLatest3(emailStream, passwordStream, genderStream,
   (a, b, c) => true); // this function is called only if valid values in all streams.

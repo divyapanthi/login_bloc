@@ -10,12 +10,12 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: "Login Bloc",
-      theme: ThemeData.dark(),
-      home: Scaffold(
-        body: AuthBlocProvider(
-            child: LoginScreen()
+    return AuthBlocProvider(
+      child: MaterialApp(
+        title: "Login Bloc",
+        theme: ThemeData.dark(),
+        home: Scaffold(
+          body: LoginScreen(),
         ),
       ),
     );

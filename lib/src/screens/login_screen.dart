@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:login_bloc_arch/src/bloc/auth_bloc.dart';
 import 'package:login_bloc_arch/src/bloc/auth_bloc_provider.dart';
+import 'package:login_bloc_arch/src/screens/second_screen.dart';
 
 class LoginScreen extends StatelessWidget {
   
@@ -101,6 +102,11 @@ class LoginScreen extends StatelessWidget {
     }
     else{
       // todo navigate to the other screen
+      Navigator.of(context).push(
+        MaterialPageRoute(builder: (_){
+          return SecondScreen();
+        })
+      );
     }
   }
 
