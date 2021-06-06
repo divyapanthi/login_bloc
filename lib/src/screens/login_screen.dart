@@ -64,6 +64,7 @@ class LoginScreen extends StatelessWidget {
   Widget buildSubmitButton(AuthBloc authBloc) {
     return StreamBuilder(
       stream: authBloc.loadingStatusStream,
+      initialData: false,
       builder: (context, AsyncSnapshot<bool> loadingSnapshot) {
         return StreamBuilder(
           stream: authBloc.buttonStream  ,
@@ -75,10 +76,10 @@ class LoginScreen extends StatelessWidget {
                   padding: EdgeInsets.all(18),
                   primary: Colors.green,
                 ),
-                  onPressed: snapshot.hasData ?  () {
+                  onPressed: snapshot.hasData && (!loadingSnapshot.data!) ?  () {
                   _onSubmit(authBloc, context);
                   }  : null,
-                  child: loadingSnapshot.hasData && loadingSnapshot.data! ? showCircularProgressIndicator() : Text("Submit"),
+                  child: loadingSnapshot.data! ? showCircularProgressIndicator() : Text("Submit"),
               ),
             );
           }
@@ -87,7 +88,7 @@ class LoginScreen extends StatelessWidget {
     );
   }
 
-  void _onSubmit(AuthBloc authBloc, BuildContext context) async {
+  Future _onSubmit(AuthBloc authBloc, BuildContext context) async {
     authBloc.getData();
     authBloc.changeLoadingStatus(true);
     final response = await authBloc.submitData();
@@ -99,7 +100,7 @@ class LoginScreen extends StatelessWidget {
       );
     }
     else{
-
+      // todo navigate to the other screen
     }
   }
 
