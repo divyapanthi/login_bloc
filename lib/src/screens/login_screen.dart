@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:login_bloc_arch/src/bloc/auth_bloc.dart';
 import 'package:login_bloc_arch/src/bloc/auth_bloc_provider.dart';
 import 'package:login_bloc_arch/src/screens/second_screen.dart';
+import 'package:login_bloc_arch/src/widgets/password_input.dart';
 
 class LoginScreen extends StatelessWidget {
   
@@ -15,7 +16,7 @@ class LoginScreen extends StatelessWidget {
         children: [
           buildEmailField(authBloc),
           SizedBox(height: 16),
-          buildPasswordField(authBloc),
+          PasswordInput(),
           SizedBox(height: 16),
           buildGenderField(authBloc),
           SizedBox(height: 16),
@@ -35,25 +36,6 @@ class LoginScreen extends StatelessWidget {
           decoration: InputDecoration(
             labelText: "Your email",
             hintText: "you@gmail.com",
-            errorText: snapshot.hasError ?  snapshot.error.toString() : null,
-            border: OutlineInputBorder(),
-          ),
-        );
-      }
-    );
-  }
-
-  Widget buildPasswordField(AuthBloc authBloc) {
-    // final AuthBloc authBloc = AuthBlocProvider.of(context);
-    return StreamBuilder(
-      stream: authBloc.passwordStream,
-      builder: (context, AsyncSnapshot<String> snapshot) {
-        return TextField(
-          obscureText: true,
-          onChanged: authBloc.changePassword,
-          decoration: InputDecoration(
-            labelText: "Your password",
-            hintText: "********",
             errorText: snapshot.hasError ?  snapshot.error.toString() : null,
             border: OutlineInputBorder(),
           ),
