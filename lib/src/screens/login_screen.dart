@@ -25,9 +25,9 @@ class LoginScreen extends StatelessWidget {
   }
 
   Widget buildEmailField(AuthBloc authBloc) {
-    return StreamBuilder<Object>(
+    return StreamBuilder(
       stream: authBloc.emailStream, // stream listen
-      builder: (BuildContext context, AsyncSnapshot snapshot) {
+      builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
         return TextField(
           keyboardType: TextInputType.emailAddress,
           onChanged: authBloc.changeEmail,
@@ -44,9 +44,9 @@ class LoginScreen extends StatelessWidget {
 
   Widget buildPasswordField(AuthBloc authBloc) {
     // final AuthBloc authBloc = AuthBlocProvider.of(context);
-    return StreamBuilder<Object>(
+    return StreamBuilder(
       stream: authBloc.passwordStream,
-      builder: (context, snapshot) {
+      builder: (context, AsyncSnapshot<String> snapshot) {
         return TextField(
           obscureText: true,
           onChanged: authBloc.changePassword,
@@ -62,30 +62,51 @@ class LoginScreen extends StatelessWidget {
   }
 
   Widget buildSubmitButton(AuthBloc authBloc) {
-    return StreamBuilder<Object>(
-      stream: authBloc.buttonStream  ,
-      builder: (context, snapshot) {
-        return Container(
-          width: double.infinity,
-          child: ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              padding: EdgeInsets.all(18),
-              primary: Colors.green,
-            ),
-              onPressed: snapshot.hasData ?  () {
-              print("");
-              } : null,
-              child: Text("Submit"),
-          ),
+    return StreamBuilder(
+      stream: authBloc.loadingStatusStream,
+      builder: (context, AsyncSnapshot<bool> loadingSnapshot) {
+        return StreamBuilder(
+          stream: authBloc.buttonStream  ,
+          builder: (context, AsyncSnapshot<bool> snapshot) {
+            return Container(
+              width: double.infinity,
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  padding: EdgeInsets.all(18),
+                  primary: Colors.green,
+                ),
+                  onPressed: snapshot.hasData ?  () {
+                  _onSubmit(authBloc, context);
+                  }  : null,
+                  child: loadingSnapshot.hasData && loadingSnapshot.data! ? showCircularProgressIndicator() : Text("Submit"),
+              ),
+            );
+          }
         );
       }
     );
   }
 
+  void _onSubmit(AuthBloc authBloc, BuildContext context) async {
+    authBloc.getData();
+    authBloc.changeLoadingStatus(true);
+    final response = await authBloc.submitData();
+    authBloc.changeLoadingStatus(false);
+    if(response == null){
+      // todo show a snackbar message
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Sign up failed")),
+      );
+    }
+    else{
+
+    }
+  }
+
   Widget buildGenderField(AuthBloc authBloc) {
-    return StreamBuilder<Object>(
+    return StreamBuilder(
       stream: authBloc.genderStream,
-      builder: (context, AsyncSnapshot snapshot) {
+      builder: (context, AsyncSnapshot<String> snapshot) {
         return DropdownButtonFormField<String>(
             items: [
               DropdownMenuItem(child: Text("Male"), value: "Male"),
@@ -105,6 +126,16 @@ class LoginScreen extends StatelessWidget {
           ),
         );
       }
+    );
+  }
+
+  showCircularProgressIndicator() {
+    return SizedBox(
+      child: CircularProgressIndicator(
+        strokeWidth: 2,
+      ),
+      width: 18,
+      height: 18,
     );
   }
 }
